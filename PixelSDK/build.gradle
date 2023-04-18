@@ -49,7 +49,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId 'com.github.convertedin'
-                artifactId 'mobile-pixel-sdk'
+                artifactId 'android-pixel-sdk'
                 version '1.0.0'
             }
         }
