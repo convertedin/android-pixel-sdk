@@ -9,7 +9,7 @@ class ConvertedInSdk {
     
 
     companion object {
-        var apiUrl: String = "https://test.convertedin.com/api/"
+        var apiUrl: String = "https://app.converted.in/api/"
         private var sInstance: ConvertedInSdk? = null
         private var  helper: PixelHelper? = null
 

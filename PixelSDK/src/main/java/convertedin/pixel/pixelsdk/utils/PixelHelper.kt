@@ -123,7 +123,6 @@ class PixelHelper(context: Context){
         eventsViewModel.addEvent(
             EventRequest(
                 event = eventName,
-                cid = eventsViewModel.getUser()?.cid,
                 cuid = eventsViewModel.getDeviceId(),
                 data = EventData(currency = currency, value = total, content = products)
             )

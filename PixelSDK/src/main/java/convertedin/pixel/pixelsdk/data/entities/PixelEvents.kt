@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName
 
 data class EventRequest(
     @SerializedName("event") var event: String,
-    @SerializedName("cid") var cid: String?,
     @SerializedName("cuid") var cuid: String?,
     @SerializedName("data") var data: EventData?,
 )
@@ -19,7 +18,5 @@ data class EventData(
 data class EventContent(
     @SerializedName("id") var id: String ?,
     @SerializedName("quantity") var quantity: String ?,
-    @SerializedName("name") var name: String ?,
-    @SerializedName("category") var category: String ?
-
+    @SerializedName("name") var name: String ?
     )

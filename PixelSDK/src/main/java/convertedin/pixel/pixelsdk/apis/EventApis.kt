@@ -28,7 +28,7 @@ interface EventApis {
     ): Single<Any>
 
     companion object {
-        const val API_IDENTITY = "identity"
+        const val API_IDENTITY = "identify"
         const val API_EVENTS = "events"
     }
 
