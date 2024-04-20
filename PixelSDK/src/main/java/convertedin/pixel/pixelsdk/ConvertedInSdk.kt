@@ -6,14 +6,14 @@ import convertedin.pixel.pixelsdk.data.entities.EventContent
 import convertedin.pixel.pixelsdk.utils.PixelHelper
 
 class ConvertedInSdk {
-    
+
 
     companion object {
         var apiUrl: String = "https://app.converted.in/api/"
         private var sInstance: ConvertedInSdk? = null
-        private var  helper: PixelHelper? = null
+        private var helper: PixelHelper? = null
 
-        private fun getInstance(context: Context) : ConvertedInSdk {
+        private fun getInstance(context: Context): ConvertedInSdk {
             if (sInstance == null) {
                 sInstance = ConvertedInSdk()
                 if (helper == null)
@@ -31,22 +31,18 @@ class ConvertedInSdk {
         getInstance(context)
         helper?.saveData(pixelId, storeUrl)
         helper?.saveDeviceId()
+
+        helper?.identifyUser()
         Log.d("Pixel SDK", "$apiUrl$pixelId")
     }
 
     //identify user to get customer id
     fun identifyUser(
-        email: String? = "",
-        phone: String? = "",
-        countryCode: String? = ""
+        email: String? = null,
+        phone: String? = null,
+        countryCode: String? = null
     ) {
-        if (email.isNullOrEmpty() &&
-            phone.isNullOrEmpty() &&
-            countryCode.isNullOrEmpty()
-        ) {
-            Log.e("pixel sdk error", "error, provide data for identity")
-        } else
-            helper?.identifyUser(email, if (countryCode.isNullOrEmpty()) null else phone, countryCode)
+        helper?.identifyUser(email = email, phone = phone, countryCode = countryCode)
     }
 
 

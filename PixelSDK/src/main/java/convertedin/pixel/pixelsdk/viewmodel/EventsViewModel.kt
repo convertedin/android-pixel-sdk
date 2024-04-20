@@ -8,39 +8,42 @@ import convertedin.pixel.pixelsdk.repository.EventsRepository
 import io.reactivex.functions.Consumer
 import java.util.UUID
 
- class EventsViewModel : BaseViewModel() {
+class EventsViewModel : BaseViewModel() {
 
-     private lateinit var repository: EventsRepository
+    private lateinit var repository: EventsRepository
 
-     fun setRepository(eventsRepository: EventsRepository) {
-         this.repository = eventsRepository
-     }
+    fun setRepository(eventsRepository: EventsRepository) {
+        this.repository = eventsRepository
+    }
 
-     fun savePixelId(pixelId:String){
+    fun savePixelId(pixelId: String) {
         repository.savePixelId(pixelId)
     }
-    fun getPixelId() : String?{
-       return repository.getPixelId()
+
+    fun getPixelId(): String? {
+        return repository.getPixelId()
     }
 
 
-    fun saveStoreUrl(storeUrl:String){
+    fun saveStoreUrl(storeUrl: String) {
         repository.saveStoreUrl(storeUrl)
     }
-    fun getStoreUrl() : String?{
+
+    fun getStoreUrl(): String? {
         return repository.getStoreUrl()
     }
 
 
-    fun saveDeviceId(){
+    fun saveDeviceId() {
         repository.saveDevicePixelId(UUID.randomUUID().toString())
     }
-    fun getDeviceId() : String? {
-       return repository.getDevicePixelId()
+
+    fun getDeviceId(): String? {
+        return repository.getDevicePixelId()
     }
 
 
-    fun getUser() : IdentifyResponse? {
+    fun getUser(): IdentifyResponse? {
         return repository.getUser()
     }
 
@@ -58,7 +61,7 @@ import java.util.UUID
             )
     }
 
-    fun addEvent(eventRequest : EventRequest) {
+    fun addEvent(eventRequest: EventRequest) {
         val storeUrl = repository.getStoreUrl()
         val pixelId = repository.getPixelId()
 
@@ -70,4 +73,4 @@ import java.util.UUID
     }
 
 
- }
+}
