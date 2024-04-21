@@ -145,7 +145,8 @@ class PixelHelper(context: Context) {
             EventRequest(
                 event = eventName,
                 cuid = eventsViewModel.getDeviceId(),
-                data = EventData(currency = currency, value = total, content = products)
+                data = EventData(currency = currency, value = total, content = products),
+                csid = eventsViewModel.getUser()?.cid
             )
         )
     }
