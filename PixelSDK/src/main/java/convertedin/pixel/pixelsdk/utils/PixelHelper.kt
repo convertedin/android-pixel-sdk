@@ -14,7 +14,7 @@ import convertedin.pixel.pixelsdk.viewmodel.EventsViewModel
 import convertedin.pixel.pixelsdk.viewmodel.NotificationsViewModel
 
 
-class PixelHelper(context: Context){
+class PixelHelper(context: Context) {
 
     private var eventsViewModel: EventsViewModel
     private var notificationsViewModel: NotificationsViewModel
@@ -24,8 +24,8 @@ class PixelHelper(context: Context){
         val eventsService = NetworkModule.provideEventApiCalls()
         val notificationsService = NetworkModule.provideNotificationApiCalls()
 
-        val eventsRepository = EventsRepository(eventsService,localDataUtils)
-        val notificationsRepository = NotificationsRepository(notificationsService,localDataUtils)
+        val eventsRepository = EventsRepository(eventsService, localDataUtils)
+        val notificationsRepository = NotificationsRepository(notificationsService, localDataUtils)
 
 
         eventsViewModel = EventsViewModel()
@@ -47,14 +47,35 @@ class PixelHelper(context: Context){
     }
 
     internal fun identifyUser(email: String?, phone: String?, countryCode: String?) {
+        val csid =
+            if (email.isNullOrBlank() && phone.isNullOrBlank() && countryCode.isNullOrBlank()) {
+                eventsViewModel.getUser()?.csid
+            } else {
+                eventsViewModel.getUser()?.cid
+            }
+
         if (validUrls())
             eventsViewModel.identifyUser(
                 IdentifyRequest(
                     email = email,
                     phone = phone,
-                    country_code = countryCode,
-                    csid = eventsViewModel.getDeviceId()
+                    countryCode = countryCode,
+                    csid = csid,
+                    src = "push"
                 )
+            )
+    }
+
+    internal fun identifyUser() {
+        val csid = if (eventsViewModel.getUser()?.csid.isNullOrBlank()) {
+            null
+        } else {
+            eventsViewModel.getUser()?.csid
+        }
+
+        if (validUrls())
+            eventsViewModel.identifyUser(
+                IdentifyRequest(src = "push", csid = csid)
             )
     }
 
@@ -124,7 +145,8 @@ class PixelHelper(context: Context){
             EventRequest(
                 event = eventName,
                 cuid = eventsViewModel.getDeviceId(),
-                data = EventData(currency = currency, value = total, content = products)
+                data = EventData(currency = currency, value = total, content = products),
+                csid = eventsViewModel.getUser()?.cid
             )
         )
     }
@@ -134,7 +156,7 @@ class PixelHelper(context: Context){
 
     internal fun saveDeviceToken(deviceToken: String?) {
         if (validUrls())
-            eventsViewModel.getUser()?.cid?.let {it->
+            eventsViewModel.getUser()?.cid?.let { it ->
                 if (notificationsViewModel.getDeviceToken().isNullOrEmpty())
                     notificationsViewModel.saveDeviceToken(
                         SaveTokenRequest(
