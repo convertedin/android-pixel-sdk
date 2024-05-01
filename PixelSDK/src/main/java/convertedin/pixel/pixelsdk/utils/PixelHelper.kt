@@ -64,6 +64,8 @@ class PixelHelper(context: Context) {
                     src = "push"
                 )
             )
+
+        saveDeviceToken(deviceToken = notificationsViewModel.getDeviceToken())
     }
 
     internal fun identifyUser() {
@@ -156,17 +158,14 @@ class PixelHelper(context: Context) {
 
     internal fun saveDeviceToken(deviceToken: String?) {
         if (validUrls())
-            eventsViewModel.getUser()?.cid?.let { it ->
-                if (notificationsViewModel.getDeviceToken().isNullOrEmpty())
-                    notificationsViewModel.saveDeviceToken(
-                        SaveTokenRequest(
-                            customerId = it,
-                            deviceToken = deviceToken,
-                            tokenType = "android"
-                        )
+            eventsViewModel.getUser()?.cid?.let {
+                notificationsViewModel.saveDeviceToken(
+                    SaveTokenRequest(
+                        customerId = it,
+                        deviceToken = deviceToken,
+                        tokenType = "android"
                     )
-                else
-                    refreshDeviceToken(deviceToken)
+                )
             }
     }
 
