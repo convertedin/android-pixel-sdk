@@ -91,6 +91,11 @@ class PixelHelper(context: Context) {
             sendEvent(eventName, currency, total, products)
     }
 
+    internal fun registerEvent() {
+        if (validUrls())
+            sendEvent("Register", null, null, null)
+    }
+
     internal fun viewContentEvent(
         currency: String?,
         total: String?,
