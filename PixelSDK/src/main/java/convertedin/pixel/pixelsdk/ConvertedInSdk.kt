@@ -56,6 +56,10 @@ class ConvertedInSdk {
         helper?.addEvent(eventName, currency, total, products)
     }
 
+    fun registerEvent() {
+        helper?.registerEvent()
+    }
+
     // add view content event
     fun viewContentEvent(
         currency: String?,
