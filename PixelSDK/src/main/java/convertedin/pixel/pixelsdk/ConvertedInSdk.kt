@@ -33,6 +33,7 @@ class ConvertedInSdk {
         helper?.saveDeviceId()
 
         helper?.identifyUser()
+        helper?.appOpened()
         Log.d("Pixel SDK", "$apiUrl$pixelId")
     }
 
@@ -56,11 +57,27 @@ class ConvertedInSdk {
         helper?.addEvent(eventName, currency, total, products)
     }
 
+    /**
+     * This event is typically triggered when a user clicks on a push notification,
+     * and should pass the received campaign id to the function, you can find the campaign id
+     * in the payload of the push notification ["campaign_id"] with a string value
+     */
+    fun onPushNotificationClicked(campaignId: String) {
+        helper?.clickOnPush(campaignId)
+    }
+
+    /**
+     * This event is typically triggered when a user registers for the app.
+     */
     fun registerEvent() {
         helper?.registerEvent()
     }
 
-    // add view content event
+    /**
+     * This event is typically triggered when a user views a specific piece of content,
+     * such as a product, article, or video. By tracking ViewContent events, developers can gain
+     * insights into what content users are engaging with most and optimize their content strategy accordingly.
+     */
     fun viewContentEvent(
         currency: String?,
         total: String?,
@@ -69,7 +86,11 @@ class ConvertedInSdk {
         helper?.viewContentEvent(currency, total, products)
     }
 
-    // add view page event
+    /**
+     * This event is triggered when a user views a page or screen within the app.
+     * By tracking PageView events, developers can gain insights into how users navigate through
+     * their app and optimize the user experience accordingly.
+     */
     fun pageViewEvent(
         currency: String?,
         total: String?,
@@ -78,7 +99,13 @@ class ConvertedInSdk {
         helper?.pageViewEvent(currency, total, products)
     }
 
-    // add to cart event
+    /**
+     * This event is triggered when a user adds a product to their shopping cart.
+     * By tracking AddToCart events, developers can gain insights into which products are most
+     * popular and optimize their product offering and pricing accordingly. The AddToCart event i
+     * s often paired with other e-commerce events such as Purchase or Checkout events, and is an
+     * important component of user analysis and e-commerce optimization.
+     */
     fun addToCartEvent(
         currency: String?,
         total: String?,
@@ -87,7 +114,13 @@ class ConvertedInSdk {
         helper?.addToCartEvent(currency, total, products)
     }
 
-    // add init checkout event
+    /**
+     * This event is triggered when a user begins the process of checking out and entering their
+     * payment and shipping information. By tracking InitiateCheckout events, developers can gain
+     * insights into how users interact with the checkout process and identify areas for improvement
+     * to increase conversion rates. The InitiateCheckout event is often paired with other e-commerce
+     * events such as AddToCart or Purchase events, and is an important component of user analysis and e-commerce optimization.
+     */
     fun initiateCheckoutEvent(
         currency: String?,
         total: String?,
@@ -96,7 +129,14 @@ class ConvertedInSdk {
         helper?.initiateCheckoutEvent(currency, total, products)
     }
 
-    // add purchase event
+    /**
+     *This event is triggered when a user completes a purchase and successfully makes a payment
+     * for a product or service. By tracking Purchase events, developers can gain insights into
+     * which products are most popular and identify patterns in user behavior to optimize the
+     * checkout process and increase sales. The Purchase event is often paired with other e-commerce
+     * events such as AddToCart or InitiateCheckout events, and is an important component of
+     * user analysis and e-commerce optimization.
+     */
     fun purchaseEvent(
         currency: String?,
         total: String?,

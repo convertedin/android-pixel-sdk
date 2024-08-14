@@ -47,20 +47,14 @@ class PixelHelper(context: Context) {
     }
 
     internal fun identifyUser(email: String?, phone: String?, countryCode: String?) {
-        val csid =
-            if (email.isNullOrBlank() && phone.isNullOrBlank() && countryCode.isNullOrBlank()) {
-                eventsViewModel.getUser()?.csid
-            } else {
-                eventsViewModel.getUser()?.cid
-            }
-
         if (validUrls())
             eventsViewModel.identifyUser(
                 IdentifyRequest(
                     email = email,
                     phone = phone,
                     countryCode = countryCode,
-                    csid = csid,
+                    anonymousCid = eventsViewModel.getUser()?.cid,
+                    csid = eventsViewModel.getUser()?.csid,
                     src = "push"
                 )
             )
@@ -69,16 +63,20 @@ class PixelHelper(context: Context) {
     }
 
     internal fun identifyUser() {
-        val csid = if (eventsViewModel.getUser()?.csid.isNullOrBlank()) {
-            null
-        } else {
-            eventsViewModel.getUser()?.csid
-        }
-
         if (validUrls())
             eventsViewModel.identifyUser(
-                IdentifyRequest(src = "push", csid = csid)
+                IdentifyRequest(
+                    src = "push",
+                    anonymousCid = eventsViewModel.getUser()?.cid,
+                    csid = eventsViewModel.getUser()?.csid
+                )
             )
+        saveDeviceToken(deviceToken = notificationsViewModel.getDeviceToken())
+    }
+
+    internal fun appOpened() {
+        if (validUrls())
+            sendEvent("OpenApp", null, null, null)
     }
 
     internal fun addEvent(
@@ -89,6 +87,13 @@ class PixelHelper(context: Context) {
     ) {
         if (validUrls())
             sendEvent(eventName, currency, total, products)
+    }
+
+    internal fun clickOnPush(campaignId: String?) {
+        if (validUrls()) {
+            eventsViewModel.saveCampaignId(campaignId = campaignId ?: "")
+            sendEvent("ClickOnPush", null, null, null)
+        }
     }
 
     internal fun registerEvent() {
@@ -153,7 +158,8 @@ class PixelHelper(context: Context) {
                 event = eventName,
                 cuid = eventsViewModel.getDeviceId(),
                 data = EventData(currency = currency, value = total, content = products),
-                csid = eventsViewModel.getUser()?.cid
+                csid = eventsViewModel.getUser()?.cid,
+                campaignId = eventsViewModel.getCampaignId()
             )
         )
     }
@@ -162,16 +168,19 @@ class PixelHelper(context: Context) {
     /////////////////////////////////////////////////////////////////////
 
     internal fun saveDeviceToken(deviceToken: String?) {
-        if (validUrls())
-            eventsViewModel.getUser()?.cid?.let {
-                notificationsViewModel.saveDeviceToken(
-                    SaveTokenRequest(
-                        customerId = it,
-                        deviceToken = deviceToken,
-                        tokenType = "android"
+        if (validUrls()) {
+            if (!deviceToken.isNullOrBlank() && deviceToken != notificationsViewModel.getDeviceToken()) {
+                eventsViewModel.getUser()?.cid?.let {
+                    notificationsViewModel.saveDeviceToken(
+                        SaveTokenRequest(
+                            customerId = it,
+                            deviceToken = deviceToken,
+                            tokenType = "android"
+                        )
                     )
-                )
+                }
             }
+        }
     }
 
 

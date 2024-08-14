@@ -17,7 +17,7 @@ import io.reactivex.Single
         identifyRequest: IdentifyRequest
     ): Single<IdentifyResponse> =
         apis.identifyUser(
-            ConvertedInSdk.apiUrl + "v1/" + pixelId + "/" + API_IDENTITY,
+            ConvertedInSdk.apiUrl + "v2/" + pixelId + "/" + API_IDENTITY,
             storeUrl,
             identifyRequest = identifyRequest
         )

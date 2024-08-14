@@ -37,7 +37,7 @@ import convertedin.pixel.pixelsdk.repository.NotificationsRepository
             subscribe(
                 repository.deleteDeviceToken(pixelId, deleteTokenRequest = deleteTokenRequest)
                     .doAfterSuccess {
-                        repository.saveDeviceTokenLocal(null)
+//                        repository.saveDeviceTokenLocal(null) //TODO temporary 13/08/2023
                     }, {}
             )
     }

@@ -46,6 +46,14 @@ class SharedPreferencesUtils private constructor(private val prefHelper: PrefHel
         return prefHelper.getString(DEVICE_PIXEL_ID, null)
     }
 
+    fun saveCampaignId(deviceId: String?) {
+        prefHelper.putString(CAMPAIGN_ID, deviceId ?: "")
+    }
+
+    fun getCampaignId(): String? {
+        return prefHelper.getString(CAMPAIGN_ID, null)
+    }
+
 
 
     companion object {
@@ -54,6 +62,7 @@ class SharedPreferencesUtils private constructor(private val prefHelper: PrefHel
         const val USER = "user"
         const val DEVICE_TOKEN = "deviceToke"
         const val DEVICE_PIXEL_ID = "devicePixelId"
+        const val CAMPAIGN_ID = "campaignId"
 
         private var sharedPreferencesUtils: SharedPreferencesUtils? = null
 

@@ -47,6 +47,14 @@ class EventsViewModel : BaseViewModel() {
         return repository.getUser()
     }
 
+    fun saveCampaignId(campaignId: String?) {
+        repository.saveCampaignId(campaignId)
+    }
+
+    fun getCampaignId(): String? {
+        return repository.getCampaignId()
+    }
+
     fun identifyUser(identifyRequest: IdentifyRequest) {
         val storeUrl = repository.getStoreUrl()
         val pixelId = repository.getPixelId()
