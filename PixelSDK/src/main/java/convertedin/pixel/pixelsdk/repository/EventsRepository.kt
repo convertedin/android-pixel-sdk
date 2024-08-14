@@ -9,8 +9,10 @@ import convertedin.pixel.pixelsdk.data.sharedPref.toObjectFromJson
 import convertedin.pixel.pixelsdk.utils.LocalDataUtils
 
 
- class EventsRepository(private val apiCalls: EventApiCalls,
-    private val localDataUtils: LocalDataUtils) : BaseRepository(localDataUtils) {
+class EventsRepository(
+    private val apiCalls: EventApiCalls,
+    private val localDataUtils: LocalDataUtils
+) : BaseRepository(localDataUtils) {
 
     fun saveUser(user: IdentifyResponse) =
         localDataUtils.sharedPreferencesUtils.saveUser(user.toJsonString())
@@ -18,6 +20,10 @@ import convertedin.pixel.pixelsdk.utils.LocalDataUtils
     fun getUser(): IdentifyResponse? = localDataUtils.sharedPreferencesUtils.getUser()
         ?.toObjectFromJson<IdentifyResponse>(IdentifyResponse::class.java)
 
+    fun saveCampaignId(campaignId: String?) =
+        localDataUtils.sharedPreferencesUtils.saveCampaignId(campaignId)
+
+    fun getCampaignId() = localDataUtils.sharedPreferencesUtils.getCampaignId()
 
     fun identifyUser(pixelId: String, storeUrl: String, identifyRequest: IdentifyRequest) =
         apiCalls.identifyUser(pixelId, storeUrl, identifyRequest = identifyRequest)

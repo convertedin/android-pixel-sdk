@@ -8,6 +8,7 @@ data class EventRequest(
     @SerializedName("cuid") var cuid: String?,
     @SerializedName("data") var data: EventData?,
     @SerializedName("csid") var csid: String?,
+    @SerializedName("ca") var campaignId: String?,
 )
 
 data class EventData(
