@@ -55,7 +55,8 @@ class PixelHelper(context: Context) {
                     countryCode = countryCode,
                     anonymousCid = eventsViewModel.getUser()?.cid,
                     csid = eventsViewModel.getUser()?.csid,
-                    src = "push"
+                    src = "push",
+                    cuid = eventsViewModel.getDeviceId()
                 )
             )
 
@@ -68,7 +69,8 @@ class PixelHelper(context: Context) {
                 IdentifyRequest(
                     src = "push",
                     anonymousCid = eventsViewModel.getUser()?.cid,
-                    csid = eventsViewModel.getUser()?.csid
+                    csid = eventsViewModel.getUser()?.csid,
+                    cuid = eventsViewModel.getDeviceId()
                 )
             )
         saveDeviceToken(deviceToken = notificationsViewModel.getDeviceToken())
@@ -140,10 +142,11 @@ class PixelHelper(context: Context) {
     internal fun purchaseEvent(
         currency: String?,
         total: String?,
-        products: ArrayList<EventContent>?
+        products: ArrayList<EventContent>?,
+        orderId: String?
     ) {
         if (validUrls())
-            sendEvent("Purchase", currency, total, products)
+            sendEvent("Purchase", currency, total, products, orderId)
     }
 
 
@@ -151,15 +154,17 @@ class PixelHelper(context: Context) {
         eventName: String,
         currency: String?,
         total: String?,
-        products: ArrayList<EventContent>?
+        products: ArrayList<EventContent>?,
+        orderId: String? = null
     ) {
         eventsViewModel.addEvent(
             EventRequest(
                 event = eventName,
                 cuid = eventsViewModel.getDeviceId(),
                 data = EventData(currency = currency, value = total, content = products),
-                csid = eventsViewModel.getUser()?.cid,
-                campaignId = eventsViewModel.getCampaignId()
+                cid = eventsViewModel.getUser()?.cid,
+                campaignId = eventsViewModel.getCampaignId(),
+                orderId = orderId
             )
         )
     }
@@ -170,12 +175,13 @@ class PixelHelper(context: Context) {
     internal fun saveDeviceToken(deviceToken: String?) {
         if (validUrls()) {
             if (!deviceToken.isNullOrBlank() && deviceToken != notificationsViewModel.getDeviceToken()) {
-                eventsViewModel.getUser()?.cid?.let {
+                eventsViewModel.getUser()?.cid?.let { cid ->
                     notificationsViewModel.saveDeviceToken(
                         SaveTokenRequest(
-                            customerId = it,
+                            customerId = cid,
                             deviceToken = deviceToken,
-                            tokenType = "android"
+                            tokenType = "android",
+                            cuid = eventsViewModel.getDeviceId()
                         )
                     )
                 }
