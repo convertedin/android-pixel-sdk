@@ -10,10 +10,12 @@ data class IdentifyRequest(
     @SerializedName("phone") var phone: String? = null,
     @SerializedName("country_code") var countryCode: String? = null,
     @SerializedName("src") var src: String? = null,
+    @SerializedName("cuid") var cuid: String?,
 )
 
 
 data class IdentifyResponse(
     @SerializedName("cid") var cid: String = "",
-    @SerializedName("csid") var csid: String = ""
+    @SerializedName("csid") var csid: String = "",
+    @SerializedName(" is_anonymous") var isAnonymous: Boolean = true,
 )

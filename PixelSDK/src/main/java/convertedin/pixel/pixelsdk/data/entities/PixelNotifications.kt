@@ -6,7 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class SaveTokenRequest(
     @SerializedName("customer_id") var customerId: String,
     @SerializedName("device_token") var deviceToken: String?,
-    @SerializedName("token_type") var tokenType: String?
+    @SerializedName("token_type") var tokenType: String?,
+    @SerializedName("cuid") var cuid: String?,
 )
 
 data class DeleteTokenRequest(

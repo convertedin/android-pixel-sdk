@@ -38,6 +38,7 @@ class ConvertedInSdk {
     }
 
     //identify user to get customer id
+    @Deprecated("This function will be removed soon, use 'registerEvent', loginEvent or 'setCustomerData' instead")
     fun identifyUser(
         email: String? = null,
         phone: String? = null,
@@ -61,27 +62,92 @@ class ConvertedInSdk {
      * This event is typically triggered when a user clicks on a push notification,
      * and should pass the received campaign id to the function, you can find the campaign id
      * in the payload of the push notification ["campaign_id"] with a string value
+     *
+     * @param campaignId is required
      */
     fun onPushNotificationClicked(campaignId: String) {
         helper?.clickOnPush(campaignId)
     }
 
+
     /**
      * This event is typically triggered when a user registers for the app.
+     * @param email is required
      */
-    fun registerEvent() {
-        helper?.registerEvent()
+    fun register(
+        email: String
+    ) {
+        helper?.register(email = email)
     }
+
+
+    /**
+     * This event is typically triggered when a user registers for the app.
+     * @param phone is required
+     */
+    fun register(
+        phone: String,
+        countryCode: String? = null
+    ) {
+        helper?.register(phone = phone, countryCode = countryCode)
+    }
+
+    /**
+     * This event is typically triggered when a user login into the app.
+     * @param email is required
+     */
+    fun login(
+        email: String
+    ) {
+        helper?.login(email = email)
+    }
+
+    /**
+     * This event is typically triggered when a user login into the the app.
+     * @param phone is required
+     */
+    fun login(
+        phone: String,
+        countryCode: String? = null
+    ) {
+        helper?.login(phone = phone, countryCode = countryCode)
+    }
+
+    /**
+     * This event is typically triggered in the first screen of the app when user email is available.
+     * @param email is required
+     */
+    fun setUserData(
+        email: String
+    ) {
+        helper?.setUserData(email = email)
+    }
+
+    /**
+     * This event is typically triggered in the first screen of the app when user phone is available.
+     * @param phone is required
+     */
+    fun setUserData(
+        phone: String,
+        countryCode: String? = null
+    ) {
+        helper?.setUserData(phone = phone, countryCode = countryCode)
+    }
+
 
     /**
      * This event is typically triggered when a user views a specific piece of content,
      * such as a product, article, or video. By tracking ViewContent events, developers can gain
      * insights into what content users are engaging with most and optimize their content strategy accordingly.
+     *
+     * @param currency is required
+     * @param total is required
+     * @param products is required, for each product `id` and `quantity` are required
      */
     fun viewContentEvent(
-        currency: String?,
-        total: String?,
-        products: ArrayList<EventContent>?
+        currency: String,
+        total: String,
+        products: ArrayList<EventContent>
     ) {
         helper?.viewContentEvent(currency, total, products)
     }
@@ -91,12 +157,8 @@ class ConvertedInSdk {
      * By tracking PageView events, developers can gain insights into how users navigate through
      * their app and optimize the user experience accordingly.
      */
-    fun pageViewEvent(
-        currency: String?,
-        total: String?,
-        products: ArrayList<EventContent>?
-    ) {
-        helper?.pageViewEvent(currency, total, products)
+    fun pageViewEvent() {
+        helper?.pageViewEvent(null, null, null)
     }
 
     /**
@@ -105,12 +167,19 @@ class ConvertedInSdk {
      * popular and optimize their product offering and pricing accordingly. The AddToCart event i
      * s often paired with other e-commerce events such as Purchase or Checkout events, and is an
      * important component of user analysis and e-commerce optimization.
+     *
+     * @param currency is required
+     * @param total is required
+     * @param products is required, for each product `id` and `quantity` are required
      */
     fun addToCartEvent(
-        currency: String?,
-        total: String?,
-        products: ArrayList<EventContent>?
+        currency: String,
+        total: String,
+        products: ArrayList<EventContent>
     ) {
+        if (currency.isBlank() || total.isBlank() || products.isEmpty())
+            return
+
         helper?.addToCartEvent(currency, total, products)
     }
 
@@ -120,12 +189,19 @@ class ConvertedInSdk {
      * insights into how users interact with the checkout process and identify areas for improvement
      * to increase conversion rates. The InitiateCheckout event is often paired with other e-commerce
      * events such as AddToCart or Purchase events, and is an important component of user analysis and e-commerce optimization.
+     *
+     * @param currency is required
+     * @param total is required
+     * @param products is required, for each product `id` and `quantity` are required
      */
     fun initiateCheckoutEvent(
-        currency: String?,
-        total: String?,
-        products: ArrayList<EventContent>?
+        currency: String,
+        total: String,
+        products: ArrayList<EventContent>
     ) {
+        if (currency.isBlank() || total.isBlank() || products.isEmpty())
+            return
+
         helper?.initiateCheckoutEvent(currency, total, products)
     }
 
@@ -136,13 +212,22 @@ class ConvertedInSdk {
      * checkout process and increase sales. The Purchase event is often paired with other e-commerce
      * events such as AddToCart or InitiateCheckout events, and is an important component of
      * user analysis and e-commerce optimization.
+     *
+     *  @param currency is required
+     *  @param total is required
+     *  @param products is required, for each product `id` and `quantity` are required
+     *  @param orderId is required
      */
     fun purchaseEvent(
-        currency: String?,
-        total: String?,
-        products: ArrayList<EventContent>?
+        currency: String,
+        total: String,
+        products: ArrayList<EventContent>,
+        orderId: String
     ) {
-        helper?.purchaseEvent(currency, total, products)
+        if (currency.isBlank() || total.isBlank() || products.isEmpty())
+            return
+
+        helper?.purchaseEvent(currency, total, products, orderId)
     }
 
     // add device id

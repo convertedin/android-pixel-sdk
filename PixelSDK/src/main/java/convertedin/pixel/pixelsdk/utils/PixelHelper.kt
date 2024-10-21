@@ -11,10 +11,11 @@ import convertedin.pixel.pixelsdk.di.localDataModule
 import convertedin.pixel.pixelsdk.repository.EventsRepository
 import convertedin.pixel.pixelsdk.repository.NotificationsRepository
 import convertedin.pixel.pixelsdk.viewmodel.EventsViewModel
+import convertedin.pixel.pixelsdk.viewmodel.IdentifyUserCallback
 import convertedin.pixel.pixelsdk.viewmodel.NotificationsViewModel
 
 
-class PixelHelper(context: Context) {
+class PixelHelper(context: Context) : IdentifyUserCallback {
 
     private var eventsViewModel: EventsViewModel
     private var notificationsViewModel: NotificationsViewModel
@@ -46,7 +47,11 @@ class PixelHelper(context: Context) {
         }
     }
 
-    internal fun identifyUser(email: String?, phone: String?, countryCode: String?) {
+    internal fun identifyUser(
+        email: String?,
+        phone: String?,
+        countryCode: String?
+    ) {
         if (validUrls())
             eventsViewModel.identifyUser(
                 IdentifyRequest(
@@ -55,7 +60,8 @@ class PixelHelper(context: Context) {
                     countryCode = countryCode,
                     anonymousCid = eventsViewModel.getUser()?.cid,
                     csid = eventsViewModel.getUser()?.csid,
-                    src = "push"
+                    src = "push",
+                    cuid = eventsViewModel.getDeviceId()
                 )
             )
 
@@ -68,9 +74,32 @@ class PixelHelper(context: Context) {
                 IdentifyRequest(
                     src = "push",
                     anonymousCid = eventsViewModel.getUser()?.cid,
-                    csid = eventsViewModel.getUser()?.csid
+                    csid = eventsViewModel.getUser()?.csid,
+                    cuid = eventsViewModel.getDeviceId()
                 )
             )
+        saveDeviceToken(deviceToken = notificationsViewModel.getDeviceToken())
+    }
+
+    internal fun identifyRegister(
+        email: String?,
+        phone: String?,
+        countryCode: String?,
+    ) {
+        if (validUrls())
+            eventsViewModel.identifyUserRegister(
+                IdentifyRequest(
+                    email = email,
+                    phone = phone,
+                    countryCode = countryCode,
+                    anonymousCid = eventsViewModel.getUser()?.cid,
+                    csid = eventsViewModel.getUser()?.csid,
+                    src = "push",
+                    cuid = eventsViewModel.getDeviceId(),
+                ),
+                this
+            )
+
         saveDeviceToken(deviceToken = notificationsViewModel.getDeviceToken())
     }
 
@@ -96,9 +125,50 @@ class PixelHelper(context: Context) {
         }
     }
 
-    internal fun registerEvent() {
-        if (validUrls())
-            sendEvent("Register", null, null, null)
+    internal fun register(email: String) {
+        identifyRegister(
+            email = email,
+            phone = null,
+            countryCode = null
+        )
+    }
+
+    internal fun register(phone: String, countryCode: String?) {
+        identifyRegister(
+            email = null,
+            phone = phone,
+            countryCode = countryCode
+        )
+    }
+
+
+    internal fun login(email: String) {
+        identifyUser(
+            email = email,
+            phone = null,
+            countryCode = null
+        )
+    }
+
+    internal fun login(phone: String, countryCode: String?) {
+        identifyUser(
+            email = null,
+            phone = phone,
+            countryCode = countryCode
+        )
+    }
+
+
+    internal fun setUserData(email: String) {
+        if (eventsViewModel.getUser()?.isAnonymous == true) {
+            identifyUser(email = email, phone = null, countryCode = null)
+        }
+    }
+
+    internal fun setUserData(phone: String, countryCode: String?) {
+        if (eventsViewModel.getUser()?.isAnonymous == true) {
+            identifyUser(email = null, phone = phone, countryCode = countryCode)
+        }
     }
 
     internal fun viewContentEvent(
@@ -140,10 +210,11 @@ class PixelHelper(context: Context) {
     internal fun purchaseEvent(
         currency: String?,
         total: String?,
-        products: ArrayList<EventContent>?
+        products: ArrayList<EventContent>?,
+        orderId: String?
     ) {
         if (validUrls())
-            sendEvent("Purchase", currency, total, products)
+            sendEvent("Purchase", currency, total, products, orderId)
     }
 
 
@@ -151,15 +222,17 @@ class PixelHelper(context: Context) {
         eventName: String,
         currency: String?,
         total: String?,
-        products: ArrayList<EventContent>?
+        products: ArrayList<EventContent>?,
+        orderId: String? = null
     ) {
         eventsViewModel.addEvent(
             EventRequest(
                 event = eventName,
                 cuid = eventsViewModel.getDeviceId(),
                 data = EventData(currency = currency, value = total, content = products),
-                csid = eventsViewModel.getUser()?.cid,
-                campaignId = eventsViewModel.getCampaignId()
+                cid = eventsViewModel.getUser()?.cid,
+                campaignId = eventsViewModel.getCampaignId(),
+                orderId = orderId
             )
         )
     }
@@ -170,12 +243,13 @@ class PixelHelper(context: Context) {
     internal fun saveDeviceToken(deviceToken: String?) {
         if (validUrls()) {
             if (!deviceToken.isNullOrBlank() && deviceToken != notificationsViewModel.getDeviceToken()) {
-                eventsViewModel.getUser()?.cid?.let {
+                eventsViewModel.getUser()?.cid?.let { cid ->
                     notificationsViewModel.saveDeviceToken(
                         SaveTokenRequest(
-                            customerId = it,
+                            customerId = cid,
                             deviceToken = deviceToken,
-                            tokenType = "android"
+                            tokenType = "android",
+                            cuid = eventsViewModel.getDeviceId()
                         )
                     )
                 }
@@ -216,6 +290,11 @@ class PixelHelper(context: Context) {
             Log.e("pixel sdk error", "error, provide store url and pixel id")
 
         return valid
+    }
+
+    override fun onUserIdentified() {
+        if (validUrls())
+            sendEvent("Register", null, null, null)
     }
 
 
