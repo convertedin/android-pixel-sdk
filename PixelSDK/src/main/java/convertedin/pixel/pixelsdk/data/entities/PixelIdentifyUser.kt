@@ -16,5 +16,6 @@ data class IdentifyRequest(
 
 data class IdentifyResponse(
     @SerializedName("cid") var cid: String = "",
-    @SerializedName("csid") var csid: String = ""
+    @SerializedName("csid") var csid: String = "",
+    @SerializedName(" is_anonymous") var isAnonymous: Boolean = true,
 )

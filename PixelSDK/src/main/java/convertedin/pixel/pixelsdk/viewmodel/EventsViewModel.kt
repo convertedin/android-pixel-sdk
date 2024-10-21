@@ -1,6 +1,7 @@
 package convertedin.pixel.pixelsdk.viewmodel
 
 
+import android.util.Log
 import convertedin.pixel.pixelsdk.data.entities.EventRequest
 import convertedin.pixel.pixelsdk.data.entities.IdentifyRequest
 import convertedin.pixel.pixelsdk.data.entities.IdentifyResponse
@@ -55,7 +56,9 @@ class EventsViewModel : BaseViewModel() {
         return repository.getCampaignId()
     }
 
-    fun identifyUser(identifyRequest: IdentifyRequest) {
+    fun identifyUser(
+        identifyRequest: IdentifyRequest
+    ) {
         val storeUrl = repository.getStoreUrl()
         val pixelId = repository.getPixelId()
 
@@ -69,6 +72,23 @@ class EventsViewModel : BaseViewModel() {
             )
     }
 
+
+    fun identifyUserRegister(identifyRequest: IdentifyRequest, callback: IdentifyUserCallback) {
+        val storeUrl = repository.getStoreUrl()
+        val pixelId = repository.getPixelId()
+
+        if (storeUrl != null && pixelId != null)
+            subscribe(
+                repository.identifyUser(pixelId, storeUrl, identifyRequest = identifyRequest)
+                    .doAfterSuccess {
+                        repository.saveUser(it)
+                        callback.onUserIdentified()
+                    },
+                Consumer {}
+            )
+    }
+
+
     fun addEvent(eventRequest: EventRequest) {
         val storeUrl = repository.getStoreUrl()
         val pixelId = repository.getPixelId()
@@ -80,5 +100,9 @@ class EventsViewModel : BaseViewModel() {
             )
     }
 
+}
 
+
+interface IdentifyUserCallback {
+    fun onUserIdentified()
 }

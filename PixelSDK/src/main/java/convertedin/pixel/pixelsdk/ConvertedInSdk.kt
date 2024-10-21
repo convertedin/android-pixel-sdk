@@ -38,6 +38,7 @@ class ConvertedInSdk {
     }
 
     //identify user to get customer id
+    @Deprecated("This function will be removed soon, use 'registerEvent', loginEvent or 'setCustomerData' instead")
     fun identifyUser(
         email: String? = null,
         phone: String? = null,
@@ -68,12 +69,71 @@ class ConvertedInSdk {
         helper?.clickOnPush(campaignId)
     }
 
+
     /**
      * This event is typically triggered when a user registers for the app.
+     * @param email is required
      */
-    fun registerEvent() {
-        helper?.registerEvent()
+    fun register(
+        email: String
+    ) {
+        helper?.register(email = email)
     }
+
+
+    /**
+     * This event is typically triggered when a user registers for the app.
+     * @param phone is required
+     */
+    fun register(
+        phone: String,
+        countryCode: String? = null
+    ) {
+        helper?.register(phone = phone, countryCode = countryCode)
+    }
+
+    /**
+     * This event is typically triggered when a user login into the app.
+     * @param email is required
+     */
+    fun login(
+        email: String
+    ) {
+        helper?.login(email = email)
+    }
+
+    /**
+     * This event is typically triggered when a user login into the the app.
+     * @param phone is required
+     */
+    fun login(
+        phone: String,
+        countryCode: String? = null
+    ) {
+        helper?.login(phone = phone, countryCode = countryCode)
+    }
+
+    /**
+     * This event is typically triggered in the first screen of the app when user email is available.
+     * @param email is required
+     */
+    fun setUserData(
+        email: String
+    ) {
+        helper?.setUserData(email = email)
+    }
+
+    /**
+     * This event is typically triggered in the first screen of the app when user phone is available.
+     * @param phone is required
+     */
+    fun setUserData(
+        phone: String,
+        countryCode: String? = null
+    ) {
+        helper?.setUserData(phone = phone, countryCode = countryCode)
+    }
+
 
     /**
      * This event is typically triggered when a user views a specific piece of content,
